@@ -7446,13 +7446,13 @@ intrinsics:
     types:
       - float32x2_t
     compose:
-      - LLVMLink:
-          name: "faddp.{neon_type}"
-          links:
-            - link: "llvm.arm.neon.vpadd.{neon_type}"
-              arch: arm
-            - link: "llvm.aarch64.neon.faddp.{neon_type}"
-              arch: aarch64,arm64ec
+      - Let:
+        - even
+        - FnCall: [simd_shuffle!, [a, b, '[0, 2]']]
+      - Let:
+        - odd
+        - FnCall: [simd_shuffle!, [a, b, '[1, 3]']]
+      - FnCall: [simd_add, [even, odd]]
 
   - name: "vpadd{neon_type.no}"
     doc: Floating-point add pairwise
@@ -7469,13 +7469,13 @@ intrinsics:
     types:
       - float16x4_t
     compose:
-      - LLVMLink:
-          name: "faddp.{neon_type}"
-          links:
-            - link: "llvm.arm.neon.vpadd.{neon_type}"
-              arch: arm
-            - link: "llvm.aarch64.neon.faddp.{neon_type}"
-              arch: aarch64,arm64ec
+      - Let:
+        - even
+        - FnCall: [simd_shuffle!, [a, b, '[0, 2, 4, 6]']]
+      - Let:
+        - odd
+        - FnCall: [simd_shuffle!, [a, b, '[1, 3, 5, 7]']]
+      - FnCall: [simd_add, [even, odd]]
 
 
   - name: "vqdmull{neon_type[0].noq}"
@@ -13200,10 +13200,10 @@ intrinsics:
                 - c
       - FnCall: ["simd_shuffle!", [a, x, '{type[4]}']]
 
-  - name: "vpadd{neon_type.no}"
+  - name: "vpadd{neon_type[0].no}"
     doc: "Add pairwise."
-    arguments: ["a: {neon_type}", "b: {neon_type}"]
-    return_type: "{neon_type}"
+    arguments: ["a: {neon_type[0]}", "b: {neon_type[0]}"]
+    return_type: "{neon_type[0]}"
     attr:
       - *neon-v7
       - FnCall: [cfg_attr, [*test-is-arm, {FnCall: [assert_instr, [vpadd]]}]]
@@ -13212,17 +13212,17 @@ intrinsics:
       - *neon-cfg-arm-unstable
     safety: safe
     types:
-      - int8x8_t
-      - int16x4_t
-      - int32x2_t
+      - [int8x8_t, '[0, 2, 4, 6, 8, 10, 12, 14]', '[1, 3, 5, 7, 9, 11, 13, 15]']
+      - [int16x4_t, '[0, 2, 4, 6]', '[1, 3, 5, 7]']
+      - [int32x2_t, '[0, 2]', '[1, 3]']
     compose:
-      - LLVMLink:
-          name: "vpadd{neon_type.no}"
-          links:
-            - link: "llvm.aarch64.neon.addp.{neon_type}"
-              arch: aarch64,arm64ec
-            - link: "llvm.arm.neon.vpadd.{neon_type}"
-              arch: arm
+      - Let:
+        - even
+        - FnCall: [simd_shuffle!, [a, b, '{type[1]}']]
+      - Let:
+        - odd
+        - FnCall: [simd_shuffle!, [a, b, '{type[2]}']]
+      - FnCall: [simd_add, [even, odd]]
 
   - name: "vpadd{neon_type[0].no}"
     doc: "Add pairwise."

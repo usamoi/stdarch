@@ -35584,15 +35584,11 @@ pub fn vpadalq_u32(a: uint64x2_t, b: uint32x4_t) -> uint64x2_t {
 #[unstable(feature = "stdarch_neon_f16", issue = "136306")]
 #[cfg(not(target_arch = "arm64ec"))]
 pub fn vpadd_f16(a: float16x4_t, b: float16x4_t) -> float16x4_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(target_arch = "arm", link_name = "llvm.arm.neon.vpadd.v4f16")]
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.faddp.v4f16"
-        )]
-        fn _vpadd_f16(a: float16x4_t, b: float16x4_t) -> float16x4_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2, 4, 6]);
+        let odd = simd_shuffle!(a, b, [1, 3, 5, 7]);
+        simd_add(even, odd)
     }
-    unsafe { _vpadd_f16(a, b) }
 }
 #[doc = "Floating-point add pairwise"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpadd_f32)"]
@@ -35613,15 +35609,11 @@ pub fn vpadd_f16(a: float16x4_t, b: float16x4_t) -> float16x4_t {
     unstable(feature = "stdarch_arm_neon_intrinsics", issue = "111800")
 )]
 pub fn vpadd_f32(a: float32x2_t, b: float32x2_t) -> float32x2_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(target_arch = "arm", link_name = "llvm.arm.neon.vpadd.v2f32")]
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.faddp.v2f32"
-        )]
-        fn _vpadd_f32(a: float32x2_t, b: float32x2_t) -> float32x2_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2]);
+        let odd = simd_shuffle!(a, b, [1, 3]);
+        simd_add(even, odd)
     }
-    unsafe { _vpadd_f32(a, b) }
 }
 #[doc = "Add pairwise."]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpadd_s8)"]
@@ -35642,15 +35634,11 @@ pub fn vpadd_f32(a: float32x2_t, b: float32x2_t) -> float32x2_t {
     unstable(feature = "stdarch_arm_neon_intrinsics", issue = "111800")
 )]
 pub fn vpadd_s8(a: int8x8_t, b: int8x8_t) -> int8x8_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.addp.v8i8"
-        )]
-        #[cfg_attr(target_arch = "arm", link_name = "llvm.arm.neon.vpadd.v8i8")]
-        fn _vpadd_s8(a: int8x8_t, b: int8x8_t) -> int8x8_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2, 4, 6, 8, 10, 12, 14]);
+        let odd = simd_shuffle!(a, b, [1, 3, 5, 7, 9, 11, 13, 15]);
+        simd_add(even, odd)
     }
-    unsafe { _vpadd_s8(a, b) }
 }
 #[doc = "Add pairwise."]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpadd_s16)"]
@@ -35671,15 +35659,11 @@ pub fn vpadd_s8(a: int8x8_t, b: int8x8_t) -> int8x8_t {
     unstable(feature = "stdarch_arm_neon_intrinsics", issue = "111800")
 )]
 pub fn vpadd_s16(a: int16x4_t, b: int16x4_t) -> int16x4_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.addp.v4i16"
-        )]
-        #[cfg_attr(target_arch = "arm", link_name = "llvm.arm.neon.vpadd.v4i16")]
-        fn _vpadd_s16(a: int16x4_t, b: int16x4_t) -> int16x4_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2, 4, 6]);
+        let odd = simd_shuffle!(a, b, [1, 3, 5, 7]);
+        simd_add(even, odd)
     }
-    unsafe { _vpadd_s16(a, b) }
 }
 #[doc = "Add pairwise."]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpadd_s32)"]
@@ -35700,15 +35684,11 @@ pub fn vpadd_s16(a: int16x4_t, b: int16x4_t) -> int16x4_t {
     unstable(feature = "stdarch_arm_neon_intrinsics", issue = "111800")
 )]
 pub fn vpadd_s32(a: int32x2_t, b: int32x2_t) -> int32x2_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.addp.v2i32"
-        )]
-        #[cfg_attr(target_arch = "arm", link_name = "llvm.arm.neon.vpadd.v2i32")]
-        fn _vpadd_s32(a: int32x2_t, b: int32x2_t) -> int32x2_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2]);
+        let odd = simd_shuffle!(a, b, [1, 3]);
+        simd_add(even, odd)
     }
-    unsafe { _vpadd_s32(a, b) }
 }
 #[doc = "Add pairwise."]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpadd_u8)"]

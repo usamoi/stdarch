@@ -15793,14 +15793,11 @@ pub fn vpaddd_u64(a: uint64x2_t) -> u64 {
 #[cfg(not(target_arch = "arm64ec"))]
 #[cfg_attr(test, assert_instr(faddp))]
 pub fn vpaddq_f16(a: float16x8_t, b: float16x8_t) -> float16x8_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.faddp.v8f16"
-        )]
-        fn _vpaddq_f16(a: float16x8_t, b: float16x8_t) -> float16x8_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2, 4, 6, 8, 10, 12, 14]);
+        let odd = simd_shuffle!(a, b, [1, 3, 5, 7, 9, 11, 13, 15]);
+        simd_add(even, odd)
     }
-    unsafe { _vpaddq_f16(a, b) }
 }
 #[doc = "Floating-point add pairwise"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddq_f32)"]
@@ -15809,14 +15806,11 @@ pub fn vpaddq_f16(a: float16x8_t, b: float16x8_t) -> float16x8_t {
 #[stable(feature = "neon_intrinsics", since = "1.59.0")]
 #[cfg_attr(test, assert_instr(faddp))]
 pub fn vpaddq_f32(a: float32x4_t, b: float32x4_t) -> float32x4_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.faddp.v4f32"
-        )]
-        fn _vpaddq_f32(a: float32x4_t, b: float32x4_t) -> float32x4_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2, 4, 6]);
+        let odd = simd_shuffle!(a, b, [1, 3, 5, 7]);
+        simd_add(even, odd)
     }
-    unsafe { _vpaddq_f32(a, b) }
 }
 #[doc = "Floating-point add pairwise"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddq_f64)"]
@@ -15825,14 +15819,11 @@ pub fn vpaddq_f32(a: float32x4_t, b: float32x4_t) -> float32x4_t {
 #[stable(feature = "neon_intrinsics", since = "1.59.0")]
 #[cfg_attr(test, assert_instr(faddp))]
 pub fn vpaddq_f64(a: float64x2_t, b: float64x2_t) -> float64x2_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.faddp.v2f64"
-        )]
-        fn _vpaddq_f64(a: float64x2_t, b: float64x2_t) -> float64x2_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2]);
+        let odd = simd_shuffle!(a, b, [1, 3]);
+        simd_add(even, odd)
     }
-    unsafe { _vpaddq_f64(a, b) }
 }
 #[doc = "Add Pairwise"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddq_s8)"]
@@ -15841,14 +15832,19 @@ pub fn vpaddq_f64(a: float64x2_t, b: float64x2_t) -> float64x2_t {
 #[stable(feature = "neon_intrinsics", since = "1.59.0")]
 #[cfg_attr(test, assert_instr(addp))]
 pub fn vpaddq_s8(a: int8x16_t, b: int8x16_t) -> int8x16_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.addp.v16i8"
-        )]
-        fn _vpaddq_s8(a: int8x16_t, b: int8x16_t) -> int8x16_t;
+    unsafe {
+        let even = simd_shuffle!(
+            a,
+            b,
+            [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]
+        );
+        let odd = simd_shuffle!(
+            a,
+            b,
+            [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]
+        );
+        simd_add(even, odd)
     }
-    unsafe { _vpaddq_s8(a, b) }
 }
 #[doc = "Add Pairwise"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddq_s16)"]
@@ -15857,14 +15853,11 @@ pub fn vpaddq_s8(a: int8x16_t, b: int8x16_t) -> int8x16_t {
 #[stable(feature = "neon_intrinsics", since = "1.59.0")]
 #[cfg_attr(test, assert_instr(addp))]
 pub fn vpaddq_s16(a: int16x8_t, b: int16x8_t) -> int16x8_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.addp.v8i16"
-        )]
-        fn _vpaddq_s16(a: int16x8_t, b: int16x8_t) -> int16x8_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2, 4, 6, 8, 10, 12, 14]);
+        let odd = simd_shuffle!(a, b, [1, 3, 5, 7, 9, 11, 13, 15]);
+        simd_add(even, odd)
     }
-    unsafe { _vpaddq_s16(a, b) }
 }
 #[doc = "Add Pairwise"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddq_s32)"]
@@ -15873,14 +15866,11 @@ pub fn vpaddq_s16(a: int16x8_t, b: int16x8_t) -> int16x8_t {
 #[stable(feature = "neon_intrinsics", since = "1.59.0")]
 #[cfg_attr(test, assert_instr(addp))]
 pub fn vpaddq_s32(a: int32x4_t, b: int32x4_t) -> int32x4_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.addp.v4i32"
-        )]
-        fn _vpaddq_s32(a: int32x4_t, b: int32x4_t) -> int32x4_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2, 4, 6]);
+        let odd = simd_shuffle!(a, b, [1, 3, 5, 7]);
+        simd_add(even, odd)
     }
-    unsafe { _vpaddq_s32(a, b) }
 }
 #[doc = "Add Pairwise"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddq_s64)"]
@@ -15889,14 +15879,11 @@ pub fn vpaddq_s32(a: int32x4_t, b: int32x4_t) -> int32x4_t {
 #[stable(feature = "neon_intrinsics", since = "1.59.0")]
 #[cfg_attr(test, assert_instr(addp))]
 pub fn vpaddq_s64(a: int64x2_t, b: int64x2_t) -> int64x2_t {
-    unsafe extern "unadjusted" {
-        #[cfg_attr(
-            any(target_arch = "aarch64", target_arch = "arm64ec"),
-            link_name = "llvm.aarch64.neon.addp.v2i64"
-        )]
-        fn _vpaddq_s64(a: int64x2_t, b: int64x2_t) -> int64x2_t;
+    unsafe {
+        let even = simd_shuffle!(a, b, [0, 2]);
+        let odd = simd_shuffle!(a, b, [1, 3]);
+        simd_add(even, odd)
     }
-    unsafe { _vpaddq_s64(a, b) }
 }
 #[doc = "Add Pairwise"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpaddq_u8)"]
@@ -16004,7 +15991,7 @@ pub fn vpaddq_u64(a: uint64x2_t, b: uint64x2_t) -> uint64x2_t {
         simd_shuffle!(ret_val, ret_val, [1, 0])
     }
 }
-#[doc = "Floating-point add pairwise"]
+#[doc = "Folding maximum of adjacent pairs"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmax_f16)"]
 #[inline]
 #[target_feature(enable = "neon,fp16")]
@@ -16021,7 +16008,7 @@ pub fn vpmax_f16(a: float16x4_t, b: float16x4_t) -> float16x4_t {
     }
     unsafe { _vpmax_f16(a, b) }
 }
-#[doc = "Floating-point add pairwise"]
+#[doc = "Folding maximum of adjacent pairs"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxq_f16)"]
 #[inline]
 #[target_feature(enable = "neon,fp16")]
@@ -16038,7 +16025,7 @@ pub fn vpmaxq_f16(a: float16x8_t, b: float16x8_t) -> float16x8_t {
     }
     unsafe { _vpmaxq_f16(a, b) }
 }
-#[doc = "Floating-point add pairwise"]
+#[doc = "Floating-point Maximum Number Pairwise (vector)."]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxnm_f16)"]
 #[inline]
 #[target_feature(enable = "neon,fp16")]
@@ -16055,7 +16042,7 @@ pub fn vpmaxnm_f16(a: float16x4_t, b: float16x4_t) -> float16x4_t {
     }
     unsafe { _vpmaxnm_f16(a, b) }
 }
-#[doc = "Floating-point add pairwise"]
+#[doc = "Floating-point Maximum Number Pairwise (vector)."]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmaxnmq_f16)"]
 #[inline]
 #[target_feature(enable = "neon,fp16")]
@@ -16312,7 +16299,7 @@ pub fn vpmaxs_f32(a: float32x2_t) -> f32 {
     }
     unsafe { _vpmaxs_f32(a) }
 }
-#[doc = "Floating-point add pairwise"]
+#[doc = "Folding minimum of adjacent pairs"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpmin_f16)"]
 #[inline]
 #[target_feature(enable = "neon,fp16")]
@@ -16329,7 +16316,7 @@ pub fn vpmin_f16(a: float16x4_t, b: float16x4_t) -> float16x4_t {
     }
     unsafe { _vpmin_f16(a, b) }
 }
-#[doc = "Floating-point add pairwise"]
+#[doc = "Folding minimum of adjacent pairs"]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminq_f16)"]
 #[inline]
 #[target_feature(enable = "neon,fp16")]
@@ -16346,7 +16333,7 @@ pub fn vpminq_f16(a: float16x8_t, b: float16x8_t) -> float16x8_t {
     }
     unsafe { _vpminq_f16(a, b) }
 }
-#[doc = "Floating-point add pairwise"]
+#[doc = "Floating-point Minimum Number Pairwise (vector)."]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminnm_f16)"]
 #[inline]
 #[target_feature(enable = "neon,fp16")]
@@ -16363,7 +16350,7 @@ pub fn vpminnm_f16(a: float16x4_t, b: float16x4_t) -> float16x4_t {
     }
     unsafe { _vpminnm_f16(a, b) }
 }
-#[doc = "Floating-point add pairwise"]
+#[doc = "Floating-point Minimum Number Pairwise (vector)."]
 #[doc = "[Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vpminnmq_f16)"]
 #[inline]
 #[target_feature(enable = "neon,fp16")]

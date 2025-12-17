@@ -6947,28 +6947,30 @@ intrinsics:
           - FnCall: [simd_shuffle!, [a, a, "{type[3]}"]]
       - FnCall: ["vmovl{neon_type[0].noq}", [a]]
 
-  - name: "vpadd{neon_type.no}"
+  - name: "vpadd{neon_type[0].no}"
     doc: Floating-point add pairwise
-    arguments: ["a: {neon_type}", "b: {neon_type}"]
-    return_type: "{type}"
+    arguments: ["a: {neon_type[0]}", "b: {neon_type[0]}"]
+    return_type: "{type[0]}"
     attr: [*neon-stable]
     assert_instr: [faddp]
     safety: safe
     types:
-      - float32x4_t
-      - float64x2_t
+      - [float32x4_t, '[0, 2, 4, 6]', '[1, 3, 5, 7]']
+      - [float64x2_t, '[0, 2]', '[1, 3]']
     compose:
-      - LLVMLink:
-          name: "faddp.{neon_type}"
-          links:
-            - link: "llvm.aarch64.neon.faddp.{neon_type}"
-              arch: aarch64,arm64ec
+      - Let:
+        - even
+        - FnCall: [simd_shuffle!, [a, b, '{type[1]}']]
+      - Let:
+        - odd
+        - FnCall: [simd_shuffle!, [a, b, '{type[2]}']]
+      - FnCall: [simd_add, [even, odd]]
 
 
-  - name: "vpadd{neon_type.no}"
+  - name: "vpadd{neon_type[0].no}"
     doc: Floating-point add pairwise
-    arguments: ["a: {neon_type}", "b: {neon_type}"]
-    return_type: "{type}"
+    arguments: ["a: {neon_type[0]}", "b: {neon_type[0]}"]
+    return_type: "{type[0]}"
     attr:
       - *neon-fp16
       - *neon-unstable-f16
@@ -6976,17 +6978,19 @@ intrinsics:
     assert_instr: [faddp]
     safety: safe
     types:
-      - float16x8_t
+      - [float16x8_t, '[0, 2, 4, 6, 8, 10, 12, 14]', '[1, 3, 5, 7, 9, 11, 13, 15]']
     compose:
-      - LLVMLink:
-          name: "faddp.{neon_type}"
-          links:
-            - link: "llvm.aarch64.neon.faddp.{neon_type}"
-              arch: aarch64,arm64ec
+      - Let:
+        - even
+        - FnCall: [simd_shuffle!, [a, b, '{type[1]}']]
+      - Let:
+        - odd
+        - FnCall: [simd_shuffle!, [a, b, '{type[2]}']]
+      - FnCall: [simd_add, [even, odd]]
 
 
   - name: "vpmax{neon_type.no}"
-    doc: Floating-point add pairwise
+    doc: "Folding maximum of adjacent pairs"
     arguments: ["a: {neon_type}", "b: {neon_type}"]
     return_type: "{type}"
     attr:
@@ -7007,7 +7011,7 @@ intrinsics:
 
 
   - name: "vpmaxnm{neon_type.no}"
-    doc: Floating-point add pairwise
+    doc: "Floating-point Maximum Number Pairwise (vector)."
     arguments: ["a: {neon_type}", "b: {neon_type}"]
     return_type: "{type}"
     attr:
@@ -7028,7 +7032,7 @@ intrinsics:
 
 
   - name: "vpmin{neon_type.no}"
-    doc: Floating-point add pairwise
+    doc: "Folding minimum of adjacent pairs"
     arguments: ["a: {neon_type}", "b: {neon_type}"]
     return_type: "{type}"
     attr:
@@ -7049,7 +7053,7 @@ intrinsics:
 
 
   - name: "vpminnm{neon_type.no}"
-    doc: Floating-point add pairwise
+    doc: "Floating-point Minimum Number Pairwise (vector)."
     arguments: ["a: {neon_type}", "b: {neon_type}"]
     return_type: "{type}"
     attr:
@@ -13209,25 +13213,27 @@ intrinsics:
             - link: "llvm.aarch64.neon.usqadd.{neon_type[1]}"
               arch: aarch64,arm64ec
 
-  - name: "vpadd{neon_type.no}"
+  - name: "vpadd{neon_type[0].no}"
     doc: "Add Pairwise"
-    arguments: ["a: {neon_type}", "b: {neon_type}"]
-    return_type: "{neon_type}"
+    arguments: ["a: {neon_type[0]}", "b: {neon_type[0]}"]
+    return_type: "{neon_type[0]}"
     attr:
       - *neon-stable
     assert_instr: [addp]
     safety: safe
     types:
-      - int8x16_t
-      - int16x8_t
-      - int32x4_t
-      - int64x2_t
+      - [int8x16_t, '[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]', '[1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]']
+      - [int16x8_t, '[0, 2, 4, 6, 8, 10, 12, 14]', '[1, 3, 5, 7, 9, 11, 13, 15]']
+      - [int32x4_t, '[0, 2, 4, 6]', '[1, 3, 5, 7]']
+      - [int64x2_t, '[0, 2]', '[1, 3]']
     compose:
-      - LLVMLink:
-          name: "vpadd{neon_type.no}"
-          links:
-            - link: "llvm.aarch64.neon.addp.{neon_type}"
-              arch: aarch64,arm64ec
+      - Let:
+        - even
+        - FnCall: [simd_shuffle!, [a, b, '{type[1]}']]
+      - Let:
+        - odd
+        - FnCall: [simd_shuffle!, [a, b, '{type[2]}']]
+      - FnCall: [simd_add, [even, odd]]
 
   - name: "vpadd{neon_type[0].no}"
     doc: "Add Pairwise"
